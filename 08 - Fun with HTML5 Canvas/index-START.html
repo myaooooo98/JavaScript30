@@ -8,6 +8,63 @@
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
 <script>
+  const canvas = document.querySelector('#draw');
+  // context - can be 3d or 2d
+  const ctx = canvas.getContext('2d');
+
+  // reside the canvas to be the size of window
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  ctx.strokeStyle = '#BADASS';    // color when the line first draw, #BADASS is a color
+  ctx.lineJoin = 'round';   // when it join with other line - square or round
+  ctx.lineCap = 'round';    // end of line
+  ctx.lineWidth = 100;
+  ctx.globalCompositeOperation = 'multiply';    // blend into each other when color overlap
+
+  let isDrawing = false;
+  let lastX = 0;
+  let lastY = 0;
+  let hue = 0;
+  let direction = true;
+
+  function draw(e) {
+    if (!isDrawing) return;   // stop the fn from running when they are not moused down
+    ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);   // start from
+    ctx.lineTo(e.offsetX, e.offsetY);   // go to
+    ctx.stroke();
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+    
+    hue++;
+    if (hue > 360) {
+      hue = 0;
+    }
+
+    // if the line width more than 100 or less than 1, change the direction
+    if (ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+      direction = !direction;
+    }
+
+    // if the direction is true, then increase the line width and vice versa
+    if (direction) {
+      ctx.lineWidth++;
+    } else {
+      ctx.lineWidth--;
+    }
+  }
+
+  // as soon as the mousedown, it will update the x and y coordinate
+  canvas.addEventListener('mousedown', (e) => {
+    isDrawing = true;
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+  });
+
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', () => isDrawing = false);
+  canvas.addEventListener('mouseout', () => isDrawing = false);   // out of the window, without this, if mouse is moved out of the window and release, when it come back, it still will be assumed to be mousedown
+
 </script>
 
 <style>
