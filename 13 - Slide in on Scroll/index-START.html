@@ -44,6 +44,7 @@
   </div>
 
   <script>
+    // run the func at most for certain seconds (20 for this case)
     function debounce(func, wait = 20, immediate = true) {
       var timeout;
       return function() {
@@ -58,6 +59,33 @@
         if (callNow) func.apply(context, args);
       };
     }
+
+    const sliderImages = document.querySelectorAll('.slide-in');
+
+    function checkSlide(e) {
+      sliderImages.forEach(sliderImage => {
+        // window.scrollY - how much we have scroll down through the top of the browser
+        // window.innerHeight - inner height of the browser window's content area in pixels
+        // sliderImage.height / 2 - so the image will slide in when half of the image space in shown when scroll down
+        // when scroll from the top to bottom
+        const slideInAt = (window.scrollY + window.innerHeight) - sliderImage.height / 2; // half way through the image 
+        
+        // image.offsetTop - return the image top is how far from the top of the window
+        // when scroll from the bottom to top
+        const imageBottom = sliderImage.offsetTop + sliderImage.height; // bottom of the image
+      
+        const isHalfShown = slideInAt > sliderImage.offsetTop;
+        const isNotScrolledPast = window.scrollY < imageBottom;
+
+        if (isHalfShown && isNotScrolledPast) {
+          sliderImage.classList.add('active');
+        } else {
+          sliderImage.classList.remove('active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', debounce(checkSlide));  // run the checkSlide for every 20 seconds instead of every single time
 
   </script>
 
