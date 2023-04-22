@@ -36,6 +36,37 @@
   </style>
 
 <script>
+  const hero = document.querySelector('.hero');
+  const text = hero.querySelector('h1');
+  const walk = 100; // if the number higher than the shadow is further away
+
+  function shadow(e) {
+    const { offsetWidth: width, offsetHeight: height } = hero;    // same as const width = hero.offsetWidth; const height = hero.offsetHeight;
+    let { offsetX: x, offsetY: y } = e;
+    // console.log(x, y) - when approaches to the h1, the x & y will close to 0
+    // because if there are children inside the hero div, it will give the x & y of that element even we are listen event on hero
+    // this = things that we listen on
+    // e.target = thing that been triggered
+    if (this !== e.target) {
+      x = x + e.target.offsetLeft;
+      y = y + e.target.offsetTop;
+    }
+
+    // if walk = 100, the range will be -50 to 50, not 0 to 100
+    const xWalk = Math.round((x / width * walk) - (walk / 2));
+    const yWalk = Math.round((y / height * walk) - (walk / 2));
+    
+    text.style.textShadow = `
+      ${xWalk}px ${yWalk}px 0 rgba(255, 0, 255, 0.7),
+      ${xWalk * -1}px ${yWalk}px 0 rgba(0, 255, 255, 0.7),
+      ${yWalk}px ${xWalk * -1}px 0 rgba(0, 255, 0, 0.7),
+      ${xWalk}px ${yWalk * -1}px 0 rgba(0, 0, 255, 0.7)
+    `;
+  }
+
+
+
+  hero.addEventListener('mousemove', shadow);
 </script>
 </body>
 </html>
