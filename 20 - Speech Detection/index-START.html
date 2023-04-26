@@ -11,8 +11,46 @@
   </div>
 
 <script>
+  //SpeechRecognition - a global variable lives in the browser
   window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+  const recognition = new SpeechRecognition();
+  recognition.interimResults = true;  // enable it to be populating as we spoke, enable to see what we have said
+
+  let p = document.createElement('p');
+  const words = document.querySelector('.words');
+  words.appendChild(p);
+
+  recognition.addEventListener('result', e => {
+    // e.results is not an array by default, so can't use map() etc
+    // there are a lot of things in e.results and it is nested inside
+    // so the first map take the result out which consist of transcript
+    // the second map take the transcript out of the result and put it into the array transcript
+    // the results keep track whether the speaker stop speaking using isFalse, if it is False, then the speaker haven't stop
+    // join all the transcript into one string as there are many of them
+    const transcript = Array.from(e.results)
+      .map(result => result[0])
+      .map(result => result.transcript)
+      .join('');
+    
+    p.textContent = transcript;
+    if(e.results[0].isFinal) {  // if the end of sentences, then isFinal = true
+      p = document.createElement('p');
+      words.appendChild(p);
+    }
+
+    // if the transcript consists of certain words, then do something
+    // can do something like getting the weather, then connect to a function that fetch API for weather etc
+    if (transcript.includes('unicorn')) {
+      console.log('🦄🦄🦄🦄🦄🦄🦄🦄🦄🦄🦄🦄🦄🦄');
+    }
+
+    console.log(transcript);
+  });
+
+  // if the recognition stop, start again, so it won't be just one time call after the first sentence is ended
+  recognition.addEventListener('end', recognition.start);
+  recognition.start();  // initial the recognition
 
 </script>
 

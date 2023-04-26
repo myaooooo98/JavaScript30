@@ -60,6 +60,22 @@
     /*Compass: https://thenounproject.com/search/?q=compass&i=592352*/
   </style>
   <script>
+    const arrow = document.querySelector('.arrow');
+    const speed = document.querySelector('.speed-value');
+
+    // getCurrentPosition() - give one
+    // watchPosition() - watch it overtime and give data as frequent as we need
+    navigator.geolocation.watchPosition((data) => {
+      // heading = no of degree relative to North
+      // speed = km/h
+      console.log(data);
+      speed.textContent = data.coords.speed;
+      arrow.style.transform = `rotate(${data.coords.heading}deg)`;
+    }, (err) => {
+      console.err(err);
+      alert('Please enable location!');
+    });
+    
   </script>
 </body>
 </html>
