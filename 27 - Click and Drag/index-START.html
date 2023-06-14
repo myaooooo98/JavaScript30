@@ -36,6 +36,39 @@
   </div>
 
 <script>
+  const slider = document.querySelector('.items');
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  slider.addEventListener('mousedown', (e) => {
+    isDown = true;
+    slider.classList.add('active');
+    startX = e.pageX - slider.offsetLeft;   // minus out the if there are any margin
+    scrollLeft = slider.scrollLeft;
+  });
+
+  slider.addEventListener('mouseleave', () => {
+    isDown = false;
+    slider.classList.remove('active');
+  });
+
+  slider.addEventListener('mouseup', () => {
+    isDown = false;
+    slider.classList.remove('active');
+  });
+
+  slider.addEventListener('mousemove', (e) => {
+    if(!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - slider.offsetLeft;
+    // calculate how much pixels have move to the left or right, if mouse move left (to show more right) is negative number and vice versa
+    const walk = (x - startX) * 2;  // multiplication to give a slider effect
+    // update the slider.scrollLeft, slider.scrollLeft = 0 (means at the very beginning of page), the bigger the number, towards the right
+    slider.scrollLeft = scrollLeft - walk;
+    console.log(walk)
+  });
+
 </script>
 
   </body>
