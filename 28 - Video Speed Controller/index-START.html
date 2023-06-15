@@ -11,11 +11,28 @@
   <div class="wrapper">
     <video class="flex" width="765" height="430" src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4" loop controls></video>
     <div class="speed">
-      <div class="speed-bar">1×</div>
+      <div class="speed-bar">1.0×</div>
     </div>
   </div>
 
 <script>
+  const speed = document.querySelector('.speed');
+  const bar = speed.querySelector('.speed-bar');
+  const video = document.querySelector('.flex');
+
+  // cannot use arrow function for this because arrow functions do not create their own this binding, it will refer window object by default
+  speed.addEventListener('mousemove', function(e) {
+    const y = e.pageY - this.offsetTop;   // minus out the padding, margin or other element before the speed div
+    const percent = y / this.offsetHeight;
+    const min = 0.4;
+    const max = 4;
+    const height = Math.round(percent * 100) + '%';
+    const playbackRate = percent * (max - min) + min;
+
+    bar.style.height = height;
+    bar.textContent = playbackRate.toFixed(1) + 'x';
+    video.playbackRate = playbackRate;
+  });
 </script>
 </body>
 </html>
